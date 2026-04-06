@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user profile information and preferences.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["student", "teacher"] },
+        "interests": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "Represents an educational course.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "modules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "content": { "type": "string" }
+            }
+          }
+        }
+      },
+      "required": ["title", "modules"]
+    },
+    "Enrollment": {
+      "title": "Enrollment",
+      "description": "Tracks a student's progress in a course.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "progress": { "type": "number" },
+        "completedModules": { "type": "array", "items": { "type": "string" } },
+        "lastAccessed": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "courseId"]
+    },
+    "Assessment": {
+      "title": "Assessment",
+      "description": "Stores results of student assessments.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "moduleId": { "type": "string" },
+        "score": { "type": "number" },
+        "feedback": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "courseId", "score"]
+    },
+    "LearningPath": {
+      "title": "Learning Path",
+      "description": "AI-generated personalized learning path.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "path": { "type": "array", "items": { "type": "string" } },
+        "reasoning": { "type": "string" },
+        "generatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "courseId", "path"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": { "schema": "User", "description": "User profiles" },
+    "/courses/{courseId}": { "schema": "Course", "description": "Course content" },
+    "/enrollments/{enrollmentId}": { "schema": "Enrollment", "description": "Student enrollments" },
+    "/assessments/{assessmentId}": { "schema": "Assessment", "description": "Assessment results" },
+    "/learningPaths/{pathId}": { "schema": "LearningPath", "description": "Personalized paths" }
+  }
+}
