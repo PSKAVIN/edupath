@@ -1,11 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const apiKey = process.env.GEMINI_API_KEY;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  if (!apiKey) {
+    return res.status(500).json({ error: "Missing GEMINI_API_KEY. Add it in Vercel → Project Settings → Environment Variables." });
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
 
   try {
     const { messages, model } = req.body;
@@ -24,7 +30,7 @@ export default async function handler(req, res) {
     const prompt = `${systemInstruction}\n\nConversation:\n${conversation}\nAssistant:`;
 
     const response = await ai.models.generateContent({
-      model: model || "gemini-3-flash-preview",
+      model: model || "gemini-2.0-flash",
       contents: prompt,
     });
 
